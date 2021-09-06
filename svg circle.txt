@@ -1,0 +1,37 @@
+I know it's a bit late in the game, but I remembered this question from when it was new and I had a similar dillemma, and I accidently found the "right" solution, if anyone is still looking for one:
+
+<path 
+    d="
+    M cx cy
+    m -r, 0
+    a r,r 0 1,0 (r * 2),0
+    a r,r 0 1,0 -(r * 2),0
+    "
+/>
+In other words, this:
+
+<circle cx="100" cy="100" r="75" />
+can be achieved as a path with this:
+
+  <path 
+        d="
+        M 100, 100
+        m -75, 0
+        a 75,75 0 1,0 150,0
+        a 75,75 0 1,0 -150,0
+        "
+  />
+
+
+the above path is clockwise circle
+
+
+The below path is anti clockwise circle
+<path 
+        d="
+        M 100, 100
+        m -75, 0
+        a 75,75 0 1,1 150,0
+        a 75,75 0 1,1 -150,0
+        "
+  />

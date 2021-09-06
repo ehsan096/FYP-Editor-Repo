@@ -1,0 +1,13 @@
+*{
+  margin: 0;
+}
+.app{
+  display: flex;
+  flex-direction: row;
+}
+.side-bar{
+  /* flex-grow: 1; */
+}
+.main{
+  /* flex-grow: 0.5; */
+}
