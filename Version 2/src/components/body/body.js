@@ -306,8 +306,15 @@ const Body = ({
   //------------------------------------================-------------------->
 
   useEffect(() => {
-    console.log("Saved Text >  ", svgText);
-  }, [svgText]);
+    console.log(
+      "Saved Text ID >  ",
+      id,
+      " Hidden > ",
+      hidden,
+      " target > ",
+      target
+    );
+  }, [id]);
 
   useEffect(() => {
     if (svgLogo) {
@@ -369,8 +376,11 @@ const Body = ({
       console.log("Delete Clicked");
       const svg = d3.select("#logo-svg");
       svg.select(`#${id}`).remove();
-      setId(null);
+
+      console.log("INside Delete > ");
+      setHidden(false);
       setTarget(null);
+      setId(null);
     }
   };
   const Duplicate = () => {
@@ -474,8 +484,11 @@ const Body = ({
     let requester = null;
     keycon
       .keydown("delete", (e) => {
-        Deleted();
-        console.log("keydown delete >  ");
+        if (hidden) {
+          Deleted();
+          console.log("keydown delete >  ");
+        }
+
         e.inputEvent.preventDefault();
       })
       .keydown(["alt", "right"], (e) => {
