@@ -34,10 +34,15 @@ const Body = ({
   const [itemMap, setItemMap] = useState(new Map());
   const [item, setItem] = useState();
   const [id, setId] = useState(null);
+  const [innerSvg, setInnerSvg] = useState();
+  const [keyPress, setKeyPress] = useState(false);
   const [pixel, setPixel] = useState(0);
+  const [sum, setSum] = useState(0);
+  const [num, setNum] = useState(0);
   const [count, setCount] = useState(1);
   const increment = 5;
   const r = 40;
+
   const str = `
   <svg xmlns="http://www.w3.org/2000/svg"
   xmlns:xhtml="http://www.w3.org/1999/xhtml"
@@ -127,6 +132,129 @@ const Body = ({
     stroke="#5f5"
     origin="50% 50%"
   />`;
+
+  const undo = async (targ, id, hidden) => {
+    const strng = d3.select("#logo-svg").html();
+    if (!innerSvg) {
+      console.log("undo else If condition");
+      setInnerSvg([
+        {
+          internalSvg: strng,
+          targ: targ,
+          id: id,
+          hidden: hidden,
+        },
+      ]);
+    } else {
+      console.log("undo else, ", await d3.select("#logo-svg").html());
+      if (innerSvg[num].internalSvg !== strng) {
+        console.log("undoooooo num > ", innerSvg);
+        setInnerSvg([
+          ...innerSvg,
+          {
+            internalSvg: strng,
+            targ: targ,
+            id: id,
+            hidden: hidden,
+          },
+        ]);
+        setNum(num + 1);
+      }
+    }
+  };
+
+  useEffect(() => {
+    console.log("UNdo Num in UseEffect> ", num);
+  }, [num]);
+  useEffect(() => {
+    console.log("num svgText svgColorObj > ");
+    undo(target, id, hidden);
+  }, [svgText, svgColorObj]);
+
+  useEffect(() => {
+    console.log("Undo Updated1");
+  }, [svgText, svgColorObj]);
+
+  const undoo = async () => {
+    console.log("True outside");
+    if (num + 1 === innerSvg.length) {
+      undo(target, id, hidden);
+      console.log("num inside if > ", num + 1 === innerSvg.length);
+      setSvgCanvas(
+        `<svg xmlns="http://www.w3.org/2000/svg"
+          xmlns:xhtml="http://www.w3.org/1999/xhtml"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          id="logo-svg"
+          x="0px"
+          y="0px"
+          viewBox="0 0 300 300"
+          enable-background="new 0 0 600 600"
+          preserveAspectRatio="xMinYMin"
+          style="background-color:white"
+          > ${innerSvg[num].internalSvg}  </svg>`
+      );
+      setTarget(innerSvg[num - 1].targ);
+      setId(innerSvg[num - 1].id);
+      setHidden(innerSvg[num - 1].hidden);
+      console.log("UNdo Num 1 > ", num - 1);
+      setNum((await num) - 1);
+    } else if (num > 0) {
+      setNum(num - 1);
+      setSvgCanvas(
+        `<svg xmlns="http://www.w3.org/2000/svg"
+          xmlns:xhtml="http://www.w3.org/1999/xhtml"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          id="logo-svg"
+          x="0px"
+          y="0px"
+          viewBox="0 0 300 300"
+          enable-background="new 0 0 600 600"
+          preserveAspectRatio="xMinYMin"
+          style="background-color:white"
+          > ${innerSvg[num - 1].internalSvg}  </svg>`
+      );
+      setTarget(innerSvg[num - 1].targ);
+      setId(innerSvg[num - 1].id);
+      setHidden(innerSvg[num - 1].hidden);
+      console.log("UNdo Num > ", num);
+    }
+  };
+  const redoo = () => {
+    if (num < innerSvg.length - 1 && num >= 0) {
+      setNum(num + 1);
+      console.log("REdo Num > ", num);
+      setSvgCanvas(
+        `<svg xmlns="http://www.w3.org/2000/svg"
+          xmlns:xhtml="http://www.w3.org/1999/xhtml"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          id="logo-svg"
+          x="0px"
+          y="0px"
+          viewBox="0 0 300 300"
+          enable-background="new 0 0 600 600"
+          preserveAspectRatio="xMinYMin"
+          style="background-color:white"
+          > ${innerSvg[num + 1].internalSvg}  </svg>`
+      );
+      setTarget(innerSvg[num + 1].targ);
+      setId(innerSvg[num + 1].id);
+      setHidden(innerSvg[num + 1].hidden);
+    }
+  };
+
+  useEffect(() => {
+    if (target) {
+      moveable.current?.updateRect();
+    }
+  }, [target]);
+
+  useEffect(() => {
+    console.log("Sum is > ", sum);
+  }, [sum]);
+  useEffect(() => {
+    console.log("Undo function  > ", innerSvg);
+  }, [innerSvg]);
+
   var stringToHTML = function (str) {
     console.log("FUnction Called");
     var parser = new DOMParser();
@@ -139,7 +267,7 @@ const Body = ({
   }, [companyName]);
 
   useEffect(() => {
-    if (hidden) {
+    if (hidden && id) {
       const txt = d3.select(`#${id}`);
       var LogoName,
         FontFamily,
@@ -299,6 +427,7 @@ const Body = ({
           .attr("text-decoration", svgText.underline)
           .attr("fill", svgText.textColor)
           .attr("stroke", svgText.borderColor);
+        moveable.current?.updateRect();
       }
     }
   }, [svgText]);
@@ -473,110 +602,286 @@ const Body = ({
   }, [id]);
   useEffect(() => {
     console.log("Item in UseEffect> ", item);
-  }, [item]);
+  }, [item ? item.get("tx") : ""]);
 
   useEffect(() => {
-    setItem(() => itemMap.get(id));
+    if (id) {
+      setItem(() => itemMap.get(id));
+    }
   }, [id, itemMap]);
   console.log("item = ", item);
+
+  // useEffect(() => {
+  //   if (id) {
+  //     const keycon = new KeyController(window);
+  //     let requester = null;
+
+  // keycon
+  //   .keydown("delete", (e) => {
+  //     if (id) {
+  //       Deleted();
+  //       console.log("keydown delete >  ");
+  //     }
+
+  //     e.inputEvent.preventDefault();
+  //   })
+  //   .keyup("delete", (e) => {
+  //     setSum(sum + 1);
+  //     console.log("Deleted");
+  //   });
+  // .keydown(["alt", "right"], (e) => {
+  //   moveable.current?.request(
+  //     "draggable",
+  //     { deltaX: 0.5, deltaY: 0 },
+  //     true
+  //   );
+  //   console.log("keydown right 659 >  ");
+  //   e.inputEvent.preventDefault();
+  // })
+  // .keyup(["alt", "right"], (e) => {
+  //   setSum(sum + 1);
+  //   console.log("keyup right 659 >  ");
+  //   e.inputEvent.preventDefault();
+  // });
+  // .keydown(["alt", "left"], (e) => {
+  //   moveable.current?.request(
+  //     "draggable",
+  //     { deltaX: -0.5, deltaY: 0 },
+  //     true
+  //   );
+
+  //   console.log("keydown left >> 82", e);
+  //   e.inputEvent.preventDefault();
+  // })
+  // .keyup(["alt", "left"], (e) => {
+  //   setSum(sum + 1);
+  //   console.log("keyup left >  ");
+  //   e.inputEvent.preventDefault();
+  // });
+  // .keydown(["alt", "down"], (e) => {
+  //   moveable.current?.request(
+  //     "draggable",
+  //     { deltaX: 0, deltaY: 0.5 },
+  //     true
+  //   );
+
+  //   e.inputEvent.preventDefault();
+  // })
+  // .keyup(["alt", "down"], (e) => {
+  //   setSum(sum + 1);
+  //   console.log("keyup down  >  ");
+  //   e.inputEvent.preventDefault();
+  // });
+  // .keydown(["alt", "up"], (e) => {
+  //   moveable.current?.request(
+  //     "draggable",
+  //     { deltaX: 0, deltaY: -0.5 },
+  //     true
+  //   );
+  //   console.log("Key UP");
+  //   e.inputEvent.preventDefault();
+  // })
+  // .keyup(["alt", "up"], (e) => {
+  //   setSum(sum + 1);
+  //   console.log("keyup up  >  ");
+  //   e.inputEvent.preventDefault();
+  // });
+
+  // .keydown(["alt", "r"], (e) => {
+  //   if (!requester) {
+  //     requester = moveable.current?.request("rotatable");
+  //   }
+  //   requester.request({ deltaRotate: 0.5 }, true);
+  //   console.log("Rotate>>>>  ", requester);
+  //   e.inputEvent.preventDefault();
+  // })
+  // .keyup(["alt", "r"], (e) => {
+  //   if (requester) {
+  //     requester.requestEnd();
+  //     requester = null;
+  //     setSum(sum + 1);
+  //   }
+  // })
+  // .keydown(["alt", "t"], (e) => {
+  //   if (!requester) {
+  //     requester = moveable.current?.request("rotatable");
+  //   }
+  //   requester.request({ deltaRotate: -0.5 }, true);
+  //   console.log("Rotate>>>>  ", requester);
+  //   e.inputEvent.preventDefault();
+  // })
+  // .keyup(["alt", "t"], (e) => {
+  //   if (requester) {
+  //     requester.requestEnd();
+  //     requester = null;
+  //     console.log("Rotate KeyUp t");
+  //     setSum(sum + 1);
+  //   }
+  // });
+
+  // .keydown(["alt", "="], (e) => {
+  //   console.log("INside A");
+  //   moveable.current?.request(
+  //     "scalable",
+  //     { deltaWidth: 0.5, deltaHeight: 0.5 },
+  //     true
+  //   );
+
+  //   e.inputEvent.preventDefault();
+  // })
+  // .keyup(["alt", "="], (e) => {
+  //   setSum(sum + 1);
+  //   console.log("Increase scale");
+  // })
+  // .keydown(["alt", "-"], (e) => {
+  //   console.log("INside I");
+  //   moveable.current?.request(
+  //     "scalable",
+  //     { deltaWidth: -0.5, deltaHeight: -0.5 },
+  //     true
+  //   );
+
+  //   e.inputEvent.preventDefault();
+  // })
+  // .keyup("-", (e) => {
+  //   setSum(sum + 1);
+  //   console.log("decrease scale");
+  // });
+  //   }
+  // });
+
   useEffect(() => {
-    const keycon = new KeyController(window);
-    let requester = null;
-    keycon
-      .keydown("delete", (e) => {
-        if (hidden) {
-          Deleted();
-          console.log("keydown delete >  ");
-        }
-
-        e.inputEvent.preventDefault();
-      })
-      .keydown(["alt", "right"], (e) => {
-        moveable.current?.request(
-          "draggable",
-          { deltaX: 0.5, deltaY: 0 },
-          true
-        );
-        console.log("keydown right 659 >  ");
-        e.inputEvent.preventDefault();
-      })
-      .keydown(["alt", "left"], (e) => {
-        moveable.current?.request(
-          "draggable",
-          { deltaX: -0.5, deltaY: 0 },
-          true
-        );
-
-        console.log("keyStrock left >> 82", e);
-        e.inputEvent.preventDefault();
-      })
-      .keydown(["alt", "down"], (e) => {
-        moveable.current?.request(
-          "draggable",
-          { deltaX: 0, deltaY: 0.5 },
-          true
-        );
-
-        e.inputEvent.preventDefault();
-      })
-      .keydown(["alt", "up"], (e) => {
-        moveable.current?.request(
-          "draggable",
-          { deltaX: 0, deltaY: -0.5 },
-          true
-        );
-        e.inputEvent.preventDefault();
-      })
-
-      .keydown(["alt", "r"], (e) => {
-        if (!requester) {
-          requester = moveable.current?.request("rotatable");
-        }
-        requester.request({ deltaRotate: 0.5 }, true);
-        console.log("Rotate>>>>  ", requester);
-        e.inputEvent.preventDefault();
-      })
-      .keyup(["alt", "r"], (e) => {
-        if (requester) {
-          requester.requestEnd();
-          requester = null;
-        }
-      })
-      .keydown(["alt", "t"], (e) => {
-        if (!requester) {
-          requester = moveable.current?.request("rotatable");
-        }
-        requester.request({ deltaRotate: -0.5 }, true);
-        console.log("Rotate>>>>  ", requester);
-        e.inputEvent.preventDefault();
-      })
-      .keyup(["alt", "t"], (e) => {
-        if (requester) {
-          requester.requestEnd();
-          requester = null;
-        }
-      })
-      .keydown(["alt", "="], (e) => {
-        console.log("INside A");
+    function onKeyPress(e) {
+      if ((e.metaKey || e.altKey) && e.key === "=") {
+        console.log("fire!");
+        setKeyPress(true);
         moveable.current?.request(
           "scalable",
           { deltaWidth: 0.5, deltaHeight: 0.5 },
           true
         );
-
-        e.inputEvent.preventDefault();
-      })
-      .keydown(["alt", "-"], (e) => {
-        console.log("INside I");
+      } else if ((e.metaKey || e.altKey) && e.key === "-") {
+        console.log("fire!");
+        setKeyPress(true);
         moveable.current?.request(
           "scalable",
           { deltaWidth: -0.5, deltaHeight: -0.5 },
           true
         );
-
-        e.inputEvent.preventDefault();
-      });
+      } else if ((e.metaKey || e.altKey) && e.key === "t") {
+        console.log("fire!");
+        setKeyPress(true);
+        moveable.current?.request("rotatable", { deltaRotate: -0.5 }, true);
+      } else if ((e.metaKey || e.altKey) && e.key === "r") {
+        console.log("fire!");
+        setKeyPress(true);
+        moveable.current?.request("rotatable", { deltaRotate: 0.5 }, true);
+      } else if ((e.metaKey || e.altKey) && e.keyCode === 38) {
+        // Key Up
+        console.log("fire!");
+        setKeyPress(true);
+        moveable.current?.request(
+          "draggable",
+          { deltaX: 0, deltaY: -0.5 },
+          true
+        );
+      } else if ((e.metaKey || e.altKey) && e.keyCode === 40) {
+        // Key Down
+        console.log("fire!");
+        setKeyPress(true);
+        moveable.current?.request(
+          "draggable",
+          { deltaX: 0, deltaY: 0.5 },
+          true
+        );
+      } else if ((e.metaKey || e.altKey) && e.keyCode === 37) {
+        //Left arrow key
+        setKeyPress(true);
+        moveable.current?.request(
+          "draggable",
+          { deltaX: -0.5, deltaY: 0 },
+          true
+        );
+      } else if ((e.metaKey || e.altKey) && e.keyCode === 39) {
+        // Right Arrow Key
+        setKeyPress(true);
+        moveable.current?.request(
+          "draggable",
+          { deltaX: 0.5, deltaY: 0 },
+          true
+        );
+      } else if (e.key === "delete") {
+        if (id) {
+          setKeyPress(true);
+          Deleted();
+          console.log("keydown delete >  ");
+        }
+      }
+    }
+    if (id) {
+      window.addEventListener("keydown", onKeyPress);
+      return () => window.removeEventListener("keydown", onKeyPress);
+    }
   });
+
+  // Remove Event Listener
+  useEffect(() => {
+    function onKeyUp(e) {
+      if ((e.metaKey || e.altKey) && e.key === "=") {
+        console.log("KeyUp =!");
+        undo(target, id, hidden);
+        setKeyPress(false);
+        setSum(sum + 1);
+      } else if ((e.metaKey || e.altKey) && e.key === "-") {
+        console.log("KeyUp -!");
+        undo(target, id, hidden);
+        setKeyPress(false);
+        setSum(sum + 1);
+      } else if ((e.metaKey || e.altKey) && e.key === "t") {
+        console.log("Key t!");
+        undo(target, id, hidden);
+        setKeyPress(false);
+        setSum(sum + 1);
+      } else if ((e.metaKey || e.altKey) && e.key === "r") {
+        console.log("Key r!");
+        undo(target, id, hidden);
+        setKeyPress(false);
+        setSum(sum + 1);
+      } else if ((e.metaKey || e.altKey) && e.keyCode === 38) {
+        console.log("Key Up!");
+        undo(target, id, hidden);
+        setKeyPress(false);
+        setSum(sum + 1);
+      } else if ((e.metaKey || e.altKey) && e.keyCode === 40) {
+        console.log("Key Down!");
+        undo(target, id, hidden);
+        setKeyPress(false);
+        setSum(sum + 1);
+      } else if ((e.metaKey || e.altKey) && e.keyCode === 37) {
+        console.log("Key Left!");
+        undo(target, id, hidden);
+        setKeyPress(false);
+        setSum(sum + 1);
+      } else if ((e.metaKey || e.altKey) && e.keyCode === 39) {
+        console.log("Key Right!");
+        undo(target, id, hidden);
+        setKeyPress(false);
+        setSum(sum + 1);
+      } else if (e.key === "delete") {
+        console.log("Key Delete");
+        undo(target, id, hidden);
+        setKeyPress(false);
+        setSum(sum + 1);
+      }
+    }
+    if (id) {
+      window.addEventListener("keyup", onKeyUp);
+      return () => window.removeEventListener("keyup", onKeyUp);
+    }
+  });
+
+  // -----------==========-----------
+
   const setItm = (el) => {
     setItemMap(
       (prev) =>
@@ -656,7 +961,7 @@ const Body = ({
 
         // console.log("e.target = 2 ", );
         console.log(" << >>> Set Target 89  >> ", e.target.tagName);
-        moveable.current?.dragStart(nativeEvent);
+        // moveable.current?.dragStart(nativeEvent);
       }
     }
   };
@@ -722,6 +1027,14 @@ const Body = ({
 
   return (
     <div className="body">
+      <div className="buttons">
+        <button className="layer" onClick={undoo}>
+          UNDO
+        </button>
+        <button className="layer" onClick={redoo}>
+          REDO
+        </button>
+      </div>
       <Moveable
         target={target} // ok
         ref={moveable} // this is for group
@@ -746,6 +1059,12 @@ const Body = ({
           );
           target.style.cssText += item?.toCSS();
         }}
+        onRotateEnd={({ target, isDrag, clientX, clientY }) => {
+          console.log("onRotateEnd", target, isDrag);
+          if (!keyPress) {
+            undo(target, id, hidden);
+          }
+        }}
         //checked
         onDragStart={({ set }) => {
           console.log("TX value onDrageStart > ", item?.get("tx"));
@@ -761,7 +1080,10 @@ const Body = ({
           target.style.cssText += item.toCSS();
         }}
         onDragEnd={({ lastEvent }) => {
-          console.log(" last 106 ", lastEvent);
+          console.log(" ON Drag End ", lastEvent);
+          if (!keyPress) {
+            undo(target, id, hidden);
+          }
         }}
         onScaleStart={({ set, dragStart }) => {
           // setOrigin(["%", "%"]);
@@ -779,6 +1101,12 @@ const Body = ({
           item.set("tx", `${drag.beforeTranslate[0]}px`);
           item.set("ty", `${drag.beforeTranslate[1]}px`);
           target.style.cssText += item.toCSS();
+        }}
+        onScaleEnd={({ target, isDrag, clientX, clientY }) => {
+          console.log("onScaleEnd", target, isDrag);
+          if (!keyPress) {
+            undo(target, id, hidden);
+          }
         }}
         onDragOriginStart={(e) => {
           const tx = parseFloat(item.get("tx")) || 0;

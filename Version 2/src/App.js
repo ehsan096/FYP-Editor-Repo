@@ -3,6 +3,7 @@ import Sidebar from "./components/sidebar/sidebar";
 import Body from "./components/body/body";
 import "./App.css";
 import logo from "./logo.svg";
+
 import Rightbar from "./components/rightbar/rightbar";
 
 function App() {
@@ -23,7 +24,7 @@ function App() {
     xRadius: 40,
     yRadius: 20,
     fontSize: "18",
-    letterSpacing: "1",
+    letterSpacing: "0",
     bold: "bold",
     italic: "normal",
     underline: "underline",
