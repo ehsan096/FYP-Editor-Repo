@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Sidebar from "./components/sidebar/sidebar";
 import Body from "./components/body/body";
 import "./App.css";
@@ -11,8 +11,8 @@ function App() {
   const [svgColorObj, setSvgColorObj] = React.useState({
     strokeColor: "",
     logoFill: "",
-    bgColor: "",
   });
+  const [bgColor, setBgColor] = useState("");
   const [svgLogo, setSvgLogo] = React.useState(null);
   const [companyName, setCompanyName] = React.useState("Comapny Name");
   const [hidden, setHidden] = React.useState(false);
@@ -42,6 +42,7 @@ function App() {
           svgColorObj={svgColorObj}
           setSvgColorObj={setSvgColorObj}
           setSvgLogo={setSvgLogo}
+          setBgColor={setBgColor}
         />
         {console.log("rerender")}
       </div>
@@ -55,6 +56,8 @@ function App() {
           hidden={hidden}
           svgText={svgText}
           setSvgText={setSvgText}
+          setBgColor={setBgColor}
+          bgColor={bgColor}
         />
       </div>
       {hidden ? (

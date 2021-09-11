@@ -7,7 +7,7 @@ import logos from "../data/logo";
 
 import ReactHtmlParser from "react-html-parser";
 
-const Sidebar = ({ svgColorObj, setSvgColorObj, setSvgLogo }) => {
+const Sidebar = ({ svgColorObj, setSvgColorObj, setSvgLogo, setBgColor }) => {
   const [colorType, setColorType] = React.useState("");
   // const [logo, setLogo] = React.useState([]);
   const [colors, setColors] = React.useState([]);
@@ -17,11 +17,15 @@ const Sidebar = ({ svgColorObj, setSvgColorObj, setSvgLogo }) => {
   const onClickOptionHandler = (e) => {
     let selectedColor = e.target.style.backgroundColor;
     // console.log("Selected color is    >  " + selectedColor);
-
-    setSvgColorObj({
-      ...svgColorObj,
-      [colorType]: selectedColor,
-    });
+    if (colorType === "bgColor") {
+      setBgColor(selectedColor);
+      console.log("ColorEhsan > 1 ", selectedColor);
+    } else {
+      setSvgColorObj({
+        ...svgColorObj,
+        [colorType]: selectedColor,
+      });
+    }
   };
   return (
     <div className="parent">

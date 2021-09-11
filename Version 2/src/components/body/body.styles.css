@@ -52,3 +52,30 @@ svg {
   /* justify-content: space-between; */
   /* align-content: space-between; */
 }
+.undo-redo {
+  border: 1px solid #0066cc;
+  background-color: #0099cc;
+  color: #ffffff;
+  padding: 5px 10px;
+  margin: 0px 10px;
+}
+.undo-redo:hover {
+  border: 1px solid #0099cc;
+  background-color: #00aacc;
+  color: #ffffff;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+button:disabled,
+button[disabled] {
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+  cursor: none;
+}
+button[disabled]:hover {
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+  cursor: unset;
+}

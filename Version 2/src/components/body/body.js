@@ -24,6 +24,8 @@ const Body = ({
   hidden,
   svgText,
   setSvgText,
+  setBgColor,
+  bgColor,
 }) => {
   const moveable = useRef(null);
   const ref = useRef();
@@ -34,12 +36,18 @@ const Body = ({
   const [itemMap, setItemMap] = useState(new Map());
   const [item, setItem] = useState();
   const [id, setId] = useState(null);
-  const [innerSvg, setInnerSvg] = useState();
+  const [innerSvg, setInnerSvg] = useState([]);
+  const [outerSvg, setOuterSvg] = useState([]);
   const [keyPress, setKeyPress] = useState(false);
   const [pixel, setPixel] = useState(0);
   const [sum, setSum] = useState(0);
   const [num, setNum] = useState(0);
   const [count, setCount] = useState(1);
+  const [textSvg, setTextSvg] = useState();
+  const [color, setColor] = useState();
+  const [und, setUnd] = useState(true);
+  const [change, setChange] = useState(false);
+  const [bg, setBg] = useState();
   const increment = 5;
   const r = 40;
 
@@ -133,98 +141,180 @@ const Body = ({
     origin="50% 50%"
   />`;
 
-  const undo = async (targ, id, hidden) => {
+  useEffect(() => {
+    if (id) {
+      if (!color || (color && color !== svgColorObj)) {
+        setColor(svgColorObj);
+      }
+    }
+  }, [svgColorObj]);
+
+  useEffect(() => {
+    if (id) {
+      if (!bg || (bg && bg !== bgColor)) {
+        setBg(bgColor);
+      }
+    }
+  }, [bgColor]);
+
+  const undo = async () => {
     const strng = d3.select("#logo-svg").html();
-    if (!innerSvg) {
+    if (innerSvg == undefined) {
       console.log("undo else If condition");
       setInnerSvg([
         {
           internalSvg: strng,
-          targ: targ,
-          id: id,
-          hidden: hidden,
         },
       ]);
     } else {
-      console.log("undo else, ", await d3.select("#logo-svg").html());
-      if (innerSvg[num].internalSvg !== strng) {
-        console.log("undoooooo num > ", innerSvg);
-        setInnerSvg([
-          ...innerSvg,
-          {
-            internalSvg: strng,
-            targ: targ,
-            id: id,
-            hidden: hidden,
-          },
-        ]);
-        setNum(num + 1);
+      let check = true;
+      for (let index = 0; index < innerSvg.length; index++) {
+        console.log("num for loop ");
+        if (innerSvg[index].internalSvg === strng) {
+          check = false;
+
+          console.log("checked num");
+          break;
+        }
+      }
+      console.log("undo num else, ", check);
+      if (check) {
+        if (num > 1 && innerSvg[num - 1].internalSvg !== strng) {
+          console.log("undoooooo num > ", innerSvg);
+          setInnerSvg([
+            ...innerSvg,
+            {
+              internalSvg: strng,
+              targ: target,
+              id: id,
+              hidden: hidden,
+            },
+          ]);
+          setNum(num + 1);
+        } else {
+          console.log("undoooooo num else > ", innerSvg);
+          setInnerSvg([
+            ...innerSvg,
+            {
+              internalSvg: strng,
+              targ: target,
+              id: id,
+              hidden: hidden,
+            },
+          ]);
+          setNum(num + 1);
+        }
       }
     }
   };
 
   useEffect(() => {
+    if (typeof innerSvg !== "undefined" && typeof outerSvg !== "undefined") {
+      console.log("num inside non-undefined aand non-undefined");
+      if (innerSvg.length === 1 && outerSvg.length > 0) {
+        document.getElementById("undo").disabled = true;
+        document.getElementById("redo").disabled = false;
+        console.log("undo >> true, redo >> false");
+      } else if (innerSvg.length > 1 && outerSvg.length > 0) {
+        document.getElementById("undo").disabled = false;
+        document.getElementById("redo").disabled = false;
+        console.log("redo >> true, undo >> true");
+      } else if (outerSvg.length === 0 && innerSvg.length > 1) {
+        document.getElementById("redo").disabled = true;
+        document.getElementById("undo").disabled = false;
+      } else if (innerSvg.length === 1 && outerSvg.length === 0) {
+        document.getElementById("undo").disabled = true;
+        document.getElementById("redo").disabled = true;
+      }
+    }
+  }, [innerSvg, outerSvg]);
+
+  useEffect(() => {
+    if (icon) {
+      undo();
+      console.log("Logo change num");
+    }
+  }, [icon]);
+  useEffect(() => {
+    if ((!textSvg && und) || (textSvg !== svgText && und)) {
+      setTextSvg(svgText);
+      console.log("SetsetTextSvg num");
+    }
+  }, [svgText]);
+  useEffect(() => {
     console.log("UNdo Num in UseEffect> ", num);
   }, [num]);
   useEffect(() => {
-    console.log("num svgText svgColorObj > ");
-    undo(target, id, hidden);
-  }, [svgText, svgColorObj]);
+    if (id) {
+      if (
+        (color.strokeColor !== "" &&
+          typeof color.strokeColor !== "undefined") ||
+        (typeof color.fill !== "undefined" && color.fill !== "")
+      ) {
+        console.log(
+          "num fill color > ",
+          color.strokeColor,
+          " fill > ",
+          color.fill
+        );
 
+        undo();
+      }
+    }
+    if (bg !== "white" && typeof bg !== "undefined") {
+      console.log("num bg ");
+      undo();
+    }
+  }, [color, bg]);
   useEffect(() => {
-    console.log("Undo Updated1");
-  }, [svgText, svgColorObj]);
+    if (textSvg) {
+      console.log("num svgText", innerSvg);
+      undo();
+    }
+  }, [textSvg]);
 
   const undoo = async () => {
-    console.log("True outside");
-    if (num + 1 === innerSvg.length) {
-      undo(target, id, hidden);
-      console.log("num inside if > ", num + 1 === innerSvg.length);
-      setSvgCanvas(
-        `<svg xmlns="http://www.w3.org/2000/svg"
-          xmlns:xhtml="http://www.w3.org/1999/xhtml"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          id="logo-svg"
-          x="0px"
-          y="0px"
-          viewBox="0 0 300 300"
-          enable-background="new 0 0 600 600"
-          preserveAspectRatio="xMinYMin"
-          style="background-color:white"
-          > ${innerSvg[num].internalSvg}  </svg>`
-      );
-      setTarget(innerSvg[num - 1].targ);
-      setId(innerSvg[num - 1].id);
-      setHidden(innerSvg[num - 1].hidden);
-      console.log("UNdo Num 1 > ", num - 1);
-      setNum((await num) - 1);
-    } else if (num > 0) {
+    console.log("True num outside");
+    if (innerSvg.length > 1) {
+      const abs = innerSvg.pop();
+      // setInnerSvg([...innerSvg]);
+      if (outerSvg) {
+        setOuterSvg([...outerSvg, abs]);
+      } else if (!outerSvg) {
+        setOuterSvg([abs]);
+      }
+
       setNum(num - 1);
       setSvgCanvas(
         `<svg xmlns="http://www.w3.org/2000/svg"
-          xmlns:xhtml="http://www.w3.org/1999/xhtml"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          id="logo-svg"
-          x="0px"
-          y="0px"
-          viewBox="0 0 300 300"
-          enable-background="new 0 0 600 600"
-          preserveAspectRatio="xMinYMin"
-          style="background-color:white"
-          > ${innerSvg[num - 1].internalSvg}  </svg>`
+            xmlns:xhtml="http://www.w3.org/1999/xhtml"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            id="logo-svg"
+            x="0px"
+            y="0px"
+            viewBox="0 0 300 300"
+            enable-background="new 0 0 600 600"
+            preserveAspectRatio="xMinYMin"
+            style="background-color:white"
+            > ${innerSvg[innerSvg.length - 1].internalSvg}  </svg>`
       );
-      setTarget(innerSvg[num - 1].targ);
-      setId(innerSvg[num - 1].id);
-      setHidden(innerSvg[num - 1].hidden);
-      console.log("UNdo Num > ", num);
+      setTarget(null);
+      setId(null);
+      setHidden(false);
+      console.log("UNdo Num > ", innerSvg);
     }
   };
   const redoo = () => {
-    if (num < innerSvg.length - 1 && num >= 0) {
-      setNum(num + 1);
-      console.log("REdo Num > ", num);
-      setSvgCanvas(
-        `<svg xmlns="http://www.w3.org/2000/svg"
+    if (typeof outerSvg !== "undefined") {
+      if (outerSvg.length > 0) {
+        setNum(num + 1);
+        const abs = outerSvg.pop();
+        if (innerSvg) {
+          setInnerSvg([...innerSvg, abs]);
+        }
+        console.log("REdo Num > ", num);
+        setSvgCanvas(
+          `<svg xmlns="http://www.w3.org/2000/svg"
           xmlns:xhtml="http://www.w3.org/1999/xhtml"
           xmlns:xlink="http://www.w3.org/1999/xlink"
           id="logo-svg"
@@ -234,25 +324,56 @@ const Body = ({
           enable-background="new 0 0 600 600"
           preserveAspectRatio="xMinYMin"
           style="background-color:white"
-          > ${innerSvg[num + 1].internalSvg}  </svg>`
-      );
-      setTarget(innerSvg[num + 1].targ);
-      setId(innerSvg[num + 1].id);
-      setHidden(innerSvg[num + 1].hidden);
+          > ${
+            // outerSvg.length > 0
+            //   ? outerSvg[outerSvg.length - 1].internalSvg &&
+            //     console.log(
+            //       "outerSvg > ",
+            //       outerSvg[outerSvg.length - 1].internalSvg
+            //     )
+            //   :
+            abs.internalSvg
+          }  </svg>`
+        );
+        setTarget(null);
+        setId(null);
+        setHidden(false);
+        console.log("Redo Num > ", outerSvg);
+      }
     }
   };
-
-  useEffect(() => {
-    if (target) {
-      moveable.current?.updateRect();
-    }
-  }, [target]);
 
   useEffect(() => {
     console.log("Sum is > ", sum);
   }, [sum]);
+  // useEffect(() => {
+  //   if (innerSvg.length > 0 && change) {
+  //     console.log("item num >>> ", item);
+  //     setChange(false);
+  //   }
+  // }, [change]);
   useEffect(() => {
-    console.log("Undo function  > ", innerSvg);
+    if (innerSvg.length > 0) {
+      // setSvgCanvas(
+      //   `<svg xmlns="http://www.w3.org/2000/svg"
+      //   xmlns:xhtml="http://www.w3.org/1999/xhtml"
+      //   xmlns:xlink="http://www.w3.org/1999/xlink"
+      //   id="logo-svg"
+      //   x="0px"
+      //   y="0px"
+      //   viewBox="0 0 300 300"
+      //   enable-background="new 0 0 600 600"
+      //   preserveAspectRatio="xMinYMin"
+      //   style="background-color:white"
+      //   > ${innerSvg[innerSvg.length - 1].internalSvg}  </svg>`
+      // );
+      // setTarget(innerSvg.targ);
+      // setId(innerSvg.id);
+      // setHidden(innerSvg.hidden);
+      // setChange(true);
+
+      console.log("Undo num function  > ", innerSvg);
+    }
   }, [innerSvg]);
 
   var stringToHTML = function (str) {
@@ -261,10 +382,6 @@ const Body = ({
     var doc = parser.parseFromString(str, "text/html");
     return doc.body.firstChild;
   };
-  useEffect(() => {
-    const svg = d3.select(`#${id}`);
-    svg.select("textPath").text(companyName);
-  }, [companyName]);
 
   useEffect(() => {
     if (hidden && id) {
@@ -356,6 +473,7 @@ const Body = ({
         textColor,
         borderColor,
       });
+      setUnd(false);
     }
   }, [id]);
 
@@ -363,6 +481,7 @@ const Body = ({
 
   useEffect(() => {
     if (target) {
+      setUnd(true);
       if (target.tagName === "text") {
         let txt = d3.select(`#${id}`);
         let sv = document.getElementById(`${id}`);
@@ -387,6 +506,7 @@ const Body = ({
             console.log("Childern > 0");
             const defp = d3.select(txtp.attr("xlink:href"));
             defp.attr("d", dE);
+            txtp.text(svgText.LogoName);
           } else {
             console.log("Childern < 0");
             const svg = d3.select("#logo-svg");
@@ -491,6 +611,7 @@ const Body = ({
       console.log("Farwar Clicked");
       const svg = d3.select("#logo-svg");
       svg.select(`#${id}`).raise();
+      undo();
     }
   };
   const backward = () => {
@@ -498,6 +619,7 @@ const Body = ({
       console.log("Backward Clicked");
       const svg = d3.select("#logo-svg");
       svg.select(`#${id}`).lower();
+      undo();
     }
   };
   const Deleted = () => {
@@ -510,6 +632,7 @@ const Body = ({
       setHidden(false);
       setTarget(null);
       setId(null);
+      undo();
     }
   };
   const Duplicate = () => {
@@ -561,6 +684,7 @@ const Body = ({
       duplicateMap(id + count, item);
       // .attr("translateY", `${parseInt(item.get("ty")) + 15}px`);
       setCount(count + 1);
+      undo();
     }
   };
 
@@ -810,11 +934,18 @@ const Body = ({
           { deltaX: 0.5, deltaY: 0 },
           true
         );
-      } else if (e.key === "delete") {
+      } else if (e.key === "Delete") {
         if (id) {
+          console.log("Delete clicked num");
           setKeyPress(true);
-          Deleted();
-          console.log("keydown delete >  ");
+          if (id) {
+            console.log("Delete Clicked");
+            const svg = d3.select("#logo-svg");
+            svg.select(`#${id}`).remove();
+
+            console.log("INside Delete Key > ");
+          }
+          console.log("keydown delete num>  ");
         }
       }
     }
@@ -829,53 +960,57 @@ const Body = ({
     function onKeyUp(e) {
       if ((e.metaKey || e.altKey) && e.key === "=") {
         console.log("KeyUp =!");
-        undo(target, id, hidden);
+        undo();
         setKeyPress(false);
         setSum(sum + 1);
       } else if ((e.metaKey || e.altKey) && e.key === "-") {
         console.log("KeyUp -!");
-        undo(target, id, hidden);
+        undo();
         setKeyPress(false);
         setSum(sum + 1);
       } else if ((e.metaKey || e.altKey) && e.key === "t") {
         console.log("Key t!");
-        undo(target, id, hidden);
+        undo();
         setKeyPress(false);
         setSum(sum + 1);
       } else if ((e.metaKey || e.altKey) && e.key === "r") {
         console.log("Key r!");
-        undo(target, id, hidden);
+        undo();
         setKeyPress(false);
         setSum(sum + 1);
       } else if ((e.metaKey || e.altKey) && e.keyCode === 38) {
         console.log("Key Up!");
-        undo(target, id, hidden);
+        undo();
         setKeyPress(false);
         setSum(sum + 1);
       } else if ((e.metaKey || e.altKey) && e.keyCode === 40) {
         console.log("Key Down!");
-        undo(target, id, hidden);
+        undo();
         setKeyPress(false);
         setSum(sum + 1);
       } else if ((e.metaKey || e.altKey) && e.keyCode === 37) {
         console.log("Key Left!");
-        undo(target, id, hidden);
+        undo();
         setKeyPress(false);
         setSum(sum + 1);
       } else if ((e.metaKey || e.altKey) && e.keyCode === 39) {
         console.log("Key Right!");
-        undo(target, id, hidden);
+        undo();
         setKeyPress(false);
         setSum(sum + 1);
-      } else if (e.key === "delete") {
-        console.log("Key Delete");
-        undo(target, id, hidden);
+      } else if (e.key === "Delete") {
+        console.log("Key Delete leave num");
+        setId(null);
+        setHidden(false);
+        setTarget(null);
+        undo();
         setKeyPress(false);
         setSum(sum + 1);
       }
     }
     if (id) {
       window.addEventListener("keyup", onKeyUp);
+
       return () => window.removeEventListener("keyup", onKeyUp);
     }
   });
@@ -966,13 +1101,25 @@ const Body = ({
     }
   };
   useEffect(() => {
+    console.log("ColorEhsan > 2", bgColor);
+  }, [bgColor]);
+  useEffect(() => {
+    setBgColor(document.getElementById("logo-svg").style.backgroundColor);
+    console.log(
+      "ColorEhsan > ",
+      document.getElementById("logo-svg").style.backgroundColor
+    );
+  }, []);
+  useEffect(() => {
     if (svgColorObj !== svgColorState) {
-      let { strokeColor, logoFill, bgColor } = svgColorObj;
+      let { strokeColor, logoFill } = svgColorObj;
       setEllipse(strokeColor, logoFill);
-      setBackground(bgColor);
+
       setSvgColorState(svgColorObj);
     }
-  }, [svgColorObj]);
+
+    setBackground(bgColor);
+  }, [svgColorObj, bgColor]);
 
   const setEllipse = (strokeColor, logoFill) => {
     if (strokeColor && logoFill) {
@@ -987,7 +1134,8 @@ const Body = ({
     let logoSVG = document.getElementById("logo-svg");
     // let rect = logoSVG.querySelector("rect");
     if (color) {
-      logoSVG.style.fill = color;
+      console.log("ColorEHsan > 3 ", color);
+      logoSVG.style = `background-color:${color}`;
     }
   };
   const downlaodImage = () => {
@@ -1028,10 +1176,10 @@ const Body = ({
   return (
     <div className="body">
       <div className="buttons">
-        <button className="layer" onClick={undoo}>
+        <button className="undo-redo" id="undo" onClick={undoo}>
           UNDO
         </button>
-        <button className="layer" onClick={redoo}>
+        <button className="undo-redo" id="redo" onClick={redoo}>
           REDO
         </button>
       </div>
@@ -1062,7 +1210,8 @@ const Body = ({
         onRotateEnd={({ target, isDrag, clientX, clientY }) => {
           console.log("onRotateEnd", target, isDrag);
           if (!keyPress) {
-            undo(target, id, hidden);
+            console.log("onRotateEnd num");
+            undo();
           }
         }}
         //checked
@@ -1082,7 +1231,8 @@ const Body = ({
         onDragEnd={({ lastEvent }) => {
           console.log(" ON Drag End ", lastEvent);
           if (!keyPress) {
-            undo(target, id, hidden);
+            console.log("onDragEnd num");
+            undo();
           }
         }}
         onScaleStart={({ set, dragStart }) => {
@@ -1105,7 +1255,8 @@ const Body = ({
         onScaleEnd={({ target, isDrag, clientX, clientY }) => {
           console.log("onScaleEnd", target, isDrag);
           if (!keyPress) {
-            undo(target, id, hidden);
+            console.log("onScaleEnd num");
+            undo();
           }
         }}
         onDragOriginStart={(e) => {
