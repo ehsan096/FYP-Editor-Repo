@@ -6,6 +6,7 @@ import { setAlias, Frame } from "scenejs";
 
 import ReactHtmlParser from "react-html-parser";
 import * as d3 from "d3";
+import { ImportantDevices } from "@material-ui/icons";
 
 setAlias("tx", ["transform", "translateX"]);
 setAlias("ty", ["transform", "translateY"]);
@@ -35,6 +36,7 @@ const Body = ({
   const [icon, setIcon] = useState();
   const [itemMap, setItemMap] = useState(new Map());
   const [item, setItem] = useState();
+  const [iteem, setIteem] = useState();
   const [id, setId] = useState(null);
   const [innerSvg, setInnerSvg] = useState([]);
   const [outerSvg, setOuterSvg] = useState([]);
@@ -84,6 +86,7 @@ const Body = ({
     opacity="1"
     stroke="#333"
     origin="50% 50%"
+
   />
   <g style="transform: translate(40px, 10px)" >
     <path
@@ -101,20 +104,20 @@ const Body = ({
       cy="80"
       rx="40"
       ry="10"
-      
+
         fill="yellow"
         stroke= "purple"
         stroke-Width= "2"
-    
+
     />
-   
+
   </g>
   <defs>
   <path d="M20,50a70,40 0 1,1 140,0a70,40 0 1,1 -140,0"
   id="shape"></path>
-  </defs>
-  
-   <text data-target="text" 
+  </defs>   
+
+   <text data-target="text"
    id="text" x="0" y="20"  font-size="18" text-decoration="underline" font-style="italic" font-weight="bold" font-family="Arial" fill="#000080">
    <textpath startOffset="0" data-target="text1" id="text1" xlink:href="#shape">
    Comapnay Name jhsdxzb jYDSHXV HKDFBC JHASBCXN JASHV JYWHSDV YUSDVJH WDFYVJH U  YFDJHV THCG WTHDF WTQDFSHA  UWdfy dXGV
@@ -477,6 +480,100 @@ const Body = ({
     }
   }, [id]);
 
+  const getClass = async () => {
+    // return timer;
+  };
+
+  // Test to set Origin of svg element
+  useEffect(async () => {
+    if (id) {
+      let origin;
+      const svgg = document.getElementById("logo-svg");
+
+      const sv = svgg.getBoundingClientRect();
+
+      const elementProp = target.getBoundingClientRect();
+
+      console.log("getBoundingClientRect 111 > ", elementProp);
+      const timer = setTimeout(() => {
+        console.log(
+          "getBoundingClientRect Timeout called!",
+          document.getElementsByClassName("moveable-origin")[0]
+        );
+
+        let orig = document.getElementsByClassName("moveable-origin")[0];
+        let org = orig.getBoundingClientRect();
+        let originX = org.x - sv.x;
+        let originY = org.y - sv.y;
+        console.log(
+          "getBoundingClientRect >originX > ",
+          originX,
+          " originY",
+          originY
+        );
+        origin = d3.select(".moveable-origin").style("transform");
+        let o = origin.match(/(\/?(-*[0-9]*[.])?[0-9]+)/g);
+        let w = elementProp.width / 2;
+        let h = elementProp.height / 2;
+        let left = elementProp.x - sv.x + w;
+        let top = elementProp.y - sv.y + h;
+        const pt = svgg.createSVGPoint();
+        pt.x = 100;
+        pt.y = 100;
+        // transform to SVG coordinates
+        const svgP = pt.matrixTransform(svgg.getScreenCTM().inverse());
+        console.log(
+          "getBoundingClientRect 3 ",
+          origin,
+          " left > ",
+          left,
+          " top > ",
+          top,
+          " originleft > ",
+          svgP.x,
+          " > OriginTop > ",
+          svgP.y
+        );
+        // d3.select(`#${id}`).style(
+        //   "transform-origin",
+        //   `${svgP.x}px ${svgP.y}px`
+        // );
+
+        return origin;
+      }, 90);
+
+      // console.log("getBoundingClientRect Timer", timer);
+
+      return () => clearTimeout(timer);
+    }
+  }, [id]);
+  useEffect(() => {
+    const svgg = document.getElementsByTagName("svg")[0];
+
+    const setOrigin = async () => {
+      const elementProp = target.getBoundingClientRect();
+      console.log("getBoundingClientRect 111 > ", elementProp);
+      let w = elementProp.width / 2;
+      let h = elementProp.height / 2;
+      const pt = svgg.createSVGPoint();
+      pt.x = elementProp.x + w;
+      pt.y = elementProp.y + h;
+      // transform to SVG coordinates
+      const svgP = pt.matrixTransform(svgg.getScreenCTM().inverse());
+      d3.select(`#${id}`).style("transform-origin", `${svgP.x}px ${svgP.y}px`);
+    };
+    if (id) {
+      if (d3.select(`#${id}`).style("transform-origin") === "0px 0px") {
+        console.log(
+          "Transform origin exists",
+          d3.select(`#${id}`).style("transform-origin")
+        );
+
+        setOrigin();
+      }
+    }
+  }, [id]);
+
   // This will handle Change of Text editor
 
   useEffect(() => {
@@ -731,6 +828,7 @@ const Body = ({
   useEffect(() => {
     if (id) {
       setItem(() => itemMap.get(id));
+      setIteem(() => itemMap.get(id));
     }
   }, [id, itemMap]);
   console.log("item = ", item);
@@ -1073,6 +1171,22 @@ const Body = ({
         console.log("e.target.tagName >>> ", e.target.tagName);
         if (e.target.tagName === "textPath") {
           setTarget(() => e.target.parentNode);
+          const svgg = document.getElementById("logo-svg");
+          const pt = svgg.createSVGPoint();
+          pt.x = clientX;
+          pt.y = clientY;
+          // transform to SVG coordinates
+          const svgP = pt.matrixTransform(svgg.getScreenCTM().inverse());
+          console.log(
+            "svgP > x > ",
+            svgP.x,
+            "x > ",
+            svgP.y,
+            " ClientX > ",
+            clientX,
+            " ClientY > ",
+            clientY
+          );
 
           setId(() => e.target.parentNode.getAttribute("data-target"));
         } else {
@@ -1269,6 +1383,7 @@ const Body = ({
           item.set("ty", `${drag.beforeTranslate[1]}px`);
           item.set("transform-origin", `${origin[0]}px ${origin[1]}px`);
           target.style.cssText += item.toCSS();
+          console.log("Origin DRAG", target);
         }}
       />
       {/* <div > */}
