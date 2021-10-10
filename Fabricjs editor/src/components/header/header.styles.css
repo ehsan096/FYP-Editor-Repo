@@ -1,0 +1,19 @@
+#header>ul{
+    background-color: black;
+    
+    list-style-type: none;
+    overflow: auto;
+}
+#header li{
+    float: left;
+    padding: 10px 30px;
+    cursor: pointer;
+    color: white;
+}
+#header .button{
+    padding: 5px 10px;
+    background-color: gray;
+    border: 1px solid wheat;
+    margin: 5px;
+    border-radius: 10px;
+}

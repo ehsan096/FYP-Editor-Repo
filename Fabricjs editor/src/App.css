@@ -1,0 +1,14 @@
+* {
+  margin: 0;
+}
+.app {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+.right-bar {
+  background-color: lightblue;
+  margin-left: -131px;
+  max-width: 300px;
+  overflow: hidden;
+}

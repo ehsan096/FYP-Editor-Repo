@@ -53,14 +53,56 @@ const Body = ({
   const increment = 5;
   const r = 40;
 
+  //   const str = `
+  // <svg xmlns="http://www.w3.org/2000/svg" id="logo-svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"  viewBox="0 0 1080 1080" xml:space="preserve">
+
+  // <g  data-target="path1" id="path1" transform="matrix(1 0 0 1 540 540)" id="7431a44f-2ad4-4b49-8225-99be20c9a52f"  >
+  // </g>
+  // <g  data-target="path2" id="path2" transform="matrix(1 0 0 1 540 540)" id="a4965cad-183b-4915-aafc-c792a15f7b35"  >
+  // <rect style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  x="-540" y="-540" rx="0" ry="0" width="1080" height="1080" />
+  // </g>
+  // <g   transform="matrix(5.04 0 0 5.04 540.09 324.09)"  >
+  // <path data-target="path3" id="path3" style="stroke: rgb(0,0,0); stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(195,12,12); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-50, -50)" d="M 50 92.875 C 26.358 92.875 7.125 73.642 7.125 50 C 7.125 26.358000000000004 26.358 7.125 50 7.125 C 73.642 7.125 92.875 26.358 92.875 50 C 92.875 73.642 73.642 92.875 50 92.875 z M 50 9.125 C 27.461 9.125 9.125 27.461 9.125 50 C 9.125 72.538 27.461 90.875 50 90.875 C 72.538 90.875 90.875 72.538 90.875 50 C 90.875 27.461 72.538 9.125 50 9.125 z" stroke-linecap="round" />
+  // </g>
+  // <g   transform="matrix(1 0 0 1 540 681.37)" style="" id="1a17e075-06da-459a-b10a-2382bbef2ad9"  >
+  // 		<text data-target="path4" id="path4" xml:space="preserve" font-family="Raleway" font-size="105" font-style="normal" font-weight="900" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="-140.39" y="32.98" >Hello</tspan></text>
+  // </g>
+  // <g data-target="path5" id="path5" transform="matrix(0.54 0 0 0.93 542.06 305.36)" style="" id="f2ca8755-f628-4576-9cc1-e69ccea29b1d"  >
+  // 		<text  xml:space="preserve" font-family="Raleway" font-size="200" font-style="normal" font-weight="900" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(12,255,214); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="-58.5" y="62.83" >L</tspan></text>
+  // </g>
+  // </svg>`;
+
+  //   const str = `<svg xmlns="http://www.w3.org/2000/svg"
+  //   xmlns:xhtml="http://www.w3.org/1999/xhtml"
+  //   xmlns:xlink="http://www.w3.org/1999/xlink"
+  //   id="logo-svg"
+  //           viewBox="-5 -5 300 300"
+  //           enable-background="new 0 0 600 600"
+  //           preserveAspectRatio="xMinYMin"
+  //           style="background-color:white"
+  //         >
+  //         <path
+  //     data-target="path11"
+  //     id="path11"
+  //     d="M 74 53.64101615137753 L 14.000000000000027 88.28203230275507 L 14 19 L 74 53.64101615137753 Z"
+  //     fill="#f55"
+  //     stroke-Linejoin="round"
+  //     stroke-Width="8"
+  //     opacity="1"
+  //     stroke="#5f5"
+  //     origin="50% 50%"
+  //   />
+  //   <rect data-target="path-3" id="path-3" x="154.577" y="110.535" width="184.801" height="175.302" fill: rgb(34, 213, 87);/>
+  //   <text data-target="path-4" id="path-4" fill: rgb(200, 14, 14); font-family: Arial, sans-serif; font-size: 24.2px; >Welcome </text>
+  //   <ellipse data-target="path-5" id="path-5" style="fill: rgb(10, 3, 146);" cx="244.387" cy="199.892" rx="69.948" ry="67.358"/>
+  //   <text data-target="path-6" id="path-6" fill: rgb(243, 238, 238); font-family: Arial, sans-serif; font-size: 24.2px; ">EHsan</text>
+  // </svg>`;
   const str = `
   <svg xmlns="http://www.w3.org/2000/svg"
   xmlns:xhtml="http://www.w3.org/1999/xhtml"
   xmlns:xlink="http://www.w3.org/1999/xlink"
   id="logo-svg"
-          x="0px"
-          y="0px"
-          viewBox="0 0 300 300"
+          viewBox="-5 -5 300 300"
           enable-background="new 0 0 600 600"
           preserveAspectRatio="xMinYMin"
           style="background-color:white"
@@ -115,7 +157,7 @@ const Body = ({
   <defs>
   <path d="M20,50a70,40 0 1,1 140,0a70,40 0 1,1 -140,0"
   id="shape"></path>
-  </defs>   
+  </defs>
 
    <text data-target="text"
    id="text" x="0" y="20"  font-size="18" text-decoration="underline" font-style="italic" font-weight="bold" font-family="Arial" fill="#000080">
