@@ -22,18 +22,34 @@ const Body = ({
   const [count, setCount] = useState(11);
   // const [group, setGroup] = useState(false);
 
+  const jsonn = `
+  {"version":"4.6.0","objects":[{"type":"rect","version":"4.6.0","originX":"left","originY":"top","left":66.55,"top":62.86,"width":271.07,"height":174.33,"fill":"rgb(216,216,216)","stroke":"","strokeWidth":1,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeUniform":false,"strokeMiterLimit":4,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","skewX":0,"skewY":0,"rx":0,"ry":0},{"type":"ellipse","version":"4.6.0","originX":"left","originY":"top","left":108.69,"top":105.96,"width":179.12,"height":88.12,"fill":"rgb(41,3,3)","stroke":"","strokeWidth":1,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeUniform":false,"strokeMiterLimit":4,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","skewX":0,"skewY":0,"rx":89.559,"ry":44.061},{"type":"i-text","version":"4.6.0","originX":"left","originY":"top","left":135.74,"top":142.74,"width":134.29,"height":18.08,"fill":"rgb(255,255,255)","stroke":"","strokeWidth":1,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeUniform":false,"strokeMiterLimit":4,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","skewX":0,"skewY":0,"fontFamily":"Arial, sans-serif","fontWeight":"normal","fontSize":16,"text":"Muhammad Ehsan","underline":false,"overline":false,"linethrough":false,"textAlign":"left","fontStyle":"normal","lineHeight":1.16,"textBackgroundColor":"","charSpacing":0,"styles":{},"direction":"ltr","path":null,"pathStartOffset":0,"pathSide":"left"},{"type":"i-text","version":"4.6.0","originX":"left","originY":"top","left":103.91,"top":243.61,"width":193.63,"height":30.28,"fill":"rgb(199,23,23)","stroke":"","strokeWidth":1,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeUniform":false,"strokeMiterLimit":4,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":0.7,"shadow":null,"visible":true,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","skewX":0,"skewY":0,"fontFamily":"Arial, sans-serif","fontWeight":"normal","fontSize":26.8,"text":"Comapny Name","underline":false,"overline":false,"linethrough":true,"textAlign":"left","fontStyle":"italic","lineHeight":1.16,"textBackgroundColor":"","charSpacing":0,"styles":{},"direction":"ltr","path":null,"pathStartOffset":0,"pathSide":"left"}]}
+  `;
+
   // const CanvasRef = useRef();
   // const [ref, setRef] = useRef();
-  //   const str = `
-  //   <?xml version="1.0" encoding="utf-8"?>
-  // <svg viewBox="0 100 500 500" xmlns="http://www.w3.org/2000/svg">
-  //   <rect id="rect" x="67.05" y="128.353" width="271.073" height="174.33" style="fill: rgb(216, 216, 216);"/>
-  //   <ellipse id="elips" style="fill: rgb(41, 3, 3);" cx="198.755" cy="215.517" rx="89.559" ry="44.061"/>
-  //   <text id="name" style="fill: rgb(255, 255, 255); font-family: Arial, sans-serif; font-size: 16px; white-space: pre;" x="134.1" y="220.306">Muhammad Ehsan</text>
-  //   <text id="comapny" style="fill: rgb(199, 23, 23); font-family: Arial, sans-serif; font-size: 26.8px; white-space: pre;" x="94.589" y="286.043">Comapny Name</text>
-  // </svg>`;
+  const str = `
+      <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+  <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="400" height="300" viewBox="0 0 400 300" xml:space="preserve">
+  <desc>Created with Fabric.js 4.6.0</desc>
+  <defs>
+  </defs>
+  <g transform="matrix(1 0 0 1 202.59 150.52)"  >
+  <rect style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(216,216,216); fill-rule: nonzero; opacity: 1;"  x="-135.5365" y="-87.165" rx="0" ry="0" width="271.073" height="174.33" />
+  </g>
+  <g transform="matrix(1 0 0 1 198.75 150.52)"  >
+  <ellipse style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(41,3,3); fill-rule: nonzero; opacity: 1;"  cx="0" cy="0" rx="89.559" ry="44.061" />
+  </g>
+  <g transform="matrix(1 0 0 1 201.24 150.29)" style="" id="text122"  >
+  		<text xml:space="preserve" font-family="Arial, sans-serif" font-size="16" font-style="normal" font-weight="normal" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="-67.14" y="5.03" >Muhammad Ehsan</tspan></text>
+  </g>
+  <g transform="matrix(1 0 0 1 195.41 278.65)" style="" id="text123"  >
+  		<text xml:space="preserve" font-family="Arial, sans-serif" font-size="26.8" font-style="italic" font-weight="normal" text-decoration="line-through" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(199,23,23); fill-rule: nonzero; opacity: 0.7; white-space: pre;" ><tspan x="-107.82" y="8.42" >C</tspan><tspan x="-86.46" y="8.42" >o</tspan><tspan x="-69.56" y="8.42" >m</tspan><tspan x="-45.23" y="8.42" >a</tspan><tspan x="-28.33" y="8.42" >p</tspan><tspan x="-11.42" y="8.42" >n</tspan><tspan x="5.48" y="8.42" >y</tspan><tspan x="20.88" y="8.42" style="white-space: pre; "> </tspan><tspan x="30.33" y="8.42" >N</tspan><tspan x="51.68" y="8.42" >a</tspan><tspan x="68.59" y="8.42" >m</tspan><tspan x="92.91" y="8.42" >e</tspan></text>
+  </g>
+  </svg>`;
 
-  const str = ` <?xml version="1.0" encoding="utf-8"?>
+  const strrrr = ` <?xml version="1.0" encoding="utf-8"?>
   <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
     <rect x="67.05" y="128.353" width="271.073" height="174.33" style="fill: rgb(216, 216, 216);"/>
     <ellipse style="fill: rgb(41, 3, 3);" cx="198.755" cy="215.517" rx="89.559" ry="44.061"/>
@@ -131,37 +147,47 @@ const Body = ({
     //     }
     //   });
     // });
-    fabric.loadSVGFromString(str, function (objects, options) {
-      // canvas.centerObject
-      // //This is how
-      // var svg = fabric.util.groupSVGElements(objects, options);
-      // canvas.setWidth(svg.width);
-      // canvas.setHeight(svg.height);
-      for (var i = 0; i < objects.length; i++) {
-        var obj = objects[i];
 
-        if (obj.type === "text") {
-          let id = obj.id;
-          obj = ConvertToIText(obj);
-          // obj.firstText = obj.text;
-          obj.id = id;
-          // obj.textState = "original";
-        }
-        canvas.add(obj);
-      }
-      // canvas.forEachObject(function (obj) {
-      //   console.log("Object type > ", obj.type);
-      //   if (obj.type === "text") {
-      //     obj = ConvertToIText(obj);
-      //     obj.firstText = obj.text;
-      //     obj.textState = "original";
-      //   }
-      // });
-      // canvas.add.apply(canvas, objects);
-      canvas.renderAll();
-      setOriginalCanvas(canvas.historyUndo.length);
-      console.log("Canvas > ", canvas);
-    });
+    // fabric.loadSVGFromString(str, function (objects, options) {
+    //   // canvas.centerObject
+    //   // //This is how
+    //   // var svg = fabric.util.groupSVGElements(objects, options);
+    //   // canvas.setWidth(svg.width);
+    //   // canvas.setHeight(svg.height);
+
+    //   for (var i = 0; i < objects.length; i++) {
+    //     var obj = objects[i];
+
+    //     if (obj.type === "text") {
+    //       let id = obj.id;
+    //       obj = ConvertToIText(obj);
+    //       console.log("Text type");
+    //       // obj.firstText = obj.text;
+    //       obj.id = id;
+
+    //       // obj.textState = "original";
+    //     }
+    //     canvas.add(obj);
+    //   }
+    //   // canvas.forEachObject(function (obj) {
+    //   //   console.log("Object type > ", obj.type);
+    //   //   if (obj.type === "text") {
+    //   //     obj = ConvertToIText(obj);
+    //   //     obj.firstText = obj.text;
+    //   //     obj.textState = "original";
+    //   //   }
+    //   // });
+    //   // canvas.add.apply(canvas, objects);
+
+    // const objectss = JSON.parse(jsonn);
+    // // const string = JSON.parse(str);
+    // console.log("Type of SVG > ", str.match(/(<\/?\w+>)/g));
+    // console.log("type here >", typeof objectss);
+    canvas.loadFromJSON(jsonn);
+    canvas.renderAll();
+    setOriginalCanvas(canvas.historyUndo.length);
+    console.log("Canvas > ", canvas.toJSON());
+    // });
 
     setCanvas(canvas);
   };
@@ -534,6 +560,10 @@ const Body = ({
             console.log("A > ", activeObject.get("angle"));
             activeObject.rotate(a);
           }
+        } else if (evt.ctrlKey && evt.code === "KeyZ") {
+          funUndo();
+        } else if (evt.ctrlKey && evt.code === "KeyY") {
+          funRedo();
         }
         if (activeObject) {
           activeObject.setCoords();
@@ -702,7 +732,9 @@ const Body = ({
   };
 
   const downloadSvg = () => {
-    saveAs(new Blob([canvas.toSVG()], { type: "image/svg+xml" }), "name.svg");
+    // saveAs(new Blob([canvas.toSVG()], { type: "image/svg+xml" }), "name.svg");
+    var json = canvas.toJSON();
+    saveAs(new Blob([JSON.stringify(json)], { type: "txt/JSON" }), "name.JSON");
   };
   const funUndo = () => {
     console.log(
